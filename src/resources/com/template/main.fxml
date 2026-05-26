@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+
+<AnchorPane prefHeight="479.0" prefWidth="582.0" style="-fx-background-color: #FFC1C1;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.template.MainController">
+   <children>
+      <Pane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Label layoutX="110.0" layoutY="52.0" text="ID" />
+            <Label layoutX="89.0" layoutY="81.0" text="Nome" />
+            <TextField fx:id="txtId" layoutX="131.0" layoutY="49.0" style="-fx-background-color: #FFE4E1;" />
+            <TextField fx:id="txtNome" layoutX="131.0" layoutY="78.0" style="-fx-background-color: #FFE4E1;" />
+            <Label layoutX="88.0" layoutY="109.0" text="Artista" />
+            <Label layoutX="84.0" layoutY="140.0" prefHeight="17.0" prefWidth="39.0" text="Gênero" />
+            <TextField fx:id="txtArtista" layoutX="131.0" layoutY="106.0" style="-fx-background-color: #FFE4E1;" />
+            <TextField fx:id="txtGenero" layoutX="131.0" layoutY="135.0" style="-fx-background-color: #FFE4E1;" />
+            <Label layoutX="100.0" layoutY="167.0" prefHeight="17.0" prefWidth="26.0" text="Ano" />
+         </children>
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor>
+      </Pane>
+      <Button fx:id="btnExcluir" layoutX="323.0" layoutY="128.0" mnemonicParsing="false" style="-fx-background-color: #CD9B9B;" text="Excluir" textFill="MISTYROSE" />
+      <Button fx:id="btnSalvar" layoutX="324.0" layoutY="47.0" mnemonicParsing="false" style="-fx-background-color: #CD9B9B;" text="Salvar" textFill="MISTYROSE" />
+      <Button fx:id="btnAlterar" layoutX="323.0" layoutY="88.0" mnemonicParsing="false" style="-fx-background-color: #CD9B9B;" text="Alterar" textFill="MISTYROSE" />
+      <TableView fx:id="tblMusicas" layoutX="81.0" layoutY="200.0" prefHeight="252.0" prefWidth="375.0" style="-fx-background-color: #FFE4E1;">
+        <columns>
+          <TableColumn fx:id="colId" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="colNome" prefWidth="75.0" text="Nome" />
+            <TableColumn fx:id="colArtista" prefWidth="75.0" text="Artista" />
+            <TableColumn fx:id="colGenero" prefWidth="75.0" text="Gênero" />
+            <TableColumn fx:id="colAno" prefWidth="75.0" text="Ano " />
+        </columns>
+      </TableView>
+      <TextField fx:id="txtAno" layoutX="131.0" layoutY="163.0" style="-fx-background-color: #FFE4E1;" />
+   </children>
+</AnchorPane>
