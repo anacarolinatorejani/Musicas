@@ -6,9 +6,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.input.MouseEvent;
 
-public class MainController
-{
+public class MainController {
+
     @FXML private Button btnSalvar;
     @FXML private Button btnAtualizar;
     @FXML private Button btnDeletar;
@@ -26,9 +30,29 @@ public class MainController
     @FXML private TableColumn<MusicasDTO, Integer> colAno;
 
     @FXML
-    private void initialize()
-    {
-        System.out.println("FXML loaded successfully!");
+    private void initialize() {
+
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+        colArtista.setCellValueFactory(new PropertyValueFactory<>("artista"));
+        colGenero.setCellValueFactory(new PropertyValueFactory<>("genero"));
+        colAno.setCellValueFactory(new PropertyValueFactory<>("ano"));
+
+        carregarMusicas();
+    }
+
+    private void carregarMusicas() {
+        try {
+            ObservableList<MusicasDTO> lista =
+                    FXCollections.observableArrayList(
+                            new MusicasDAO().listarMusicas()
+                    );
+
+            tblMusicas.setItems(lista);
+
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar músicas: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -46,6 +70,7 @@ public class MainController
 
             new MusicasDAO().cadastrarMusicas(novaMusica);
 
+            carregarMusicas();
             limparCampos();
 
         } catch (NumberFormatException e) {
@@ -71,6 +96,7 @@ public class MainController
 
             new MusicasDAO().atualizarMusicas(musicaEditada);
 
+            carregarMusicas();
             limparCampos();
 
         } catch (NumberFormatException e) {
@@ -91,6 +117,7 @@ public class MainController
 
             new MusicasDAO().deletarMusicas(id);
 
+            carregarMusicas();
             limparCampos();
 
         } catch (NumberFormatException e) {
@@ -118,7 +145,8 @@ public class MainController
         txtNome.requestFocus();
     }
 
-    private void carregarCampos() {
+    @FXML
+    private void carregarCampos(MouseEvent event) {
         try {
             MusicasDTO musicaSelecionada = tblMusicas.getSelectionModel().getSelectedItem();
 
