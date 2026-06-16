@@ -1,28 +1,31 @@
 package com.template;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.input.MouseEvent;
 
 public class MainController {
-//declara os elementos do front no controller
+
     @FXML private Button btnSalvar;
     @FXML private Button btnAtualizar;
     @FXML private Button btnDeletar;
     @FXML private Button btnLimpar;
+
     @FXML private TextField txtId;
     @FXML private TextField txtNome;
     @FXML private TextField txtArtista;
     @FXML private TextField txtGenero;
     @FXML private TextField txtAno;
+
     @FXML private TableView<MusicasDTO> tblMusicas;
+
     @FXML private TableColumn<MusicasDTO, Integer> colId;
     @FXML private TableColumn<MusicasDTO, String> colNome;
     @FXML private TableColumn<MusicasDTO, String> colArtista;
@@ -38,127 +41,139 @@ public class MainController {
         colGenero.setCellValueFactory(new PropertyValueFactory<>("genero"));
         colAno.setCellValueFactory(new PropertyValueFactory<>("ano"));
 
+        colId.setPrefWidth(60);
+        colNome.setPrefWidth(180);
+        colArtista.setPrefWidth(180);
+        colGenero.setPrefWidth(140);
+        colAno.setPrefWidth(100);
+
+        txtId.setEditable(false);
+
+        txtNome.setPromptText("Digite o nome da música");
+        txtArtista.setPromptText("Digite o artista");
+        txtGenero.setPromptText("Digite o gênero");
+        txtAno.setPromptText("Digite o ano");
+
+        btnAtualizar.setDisable(true);
+        btnDeletar.setDisable(true);
+
+        txtAno.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                txtAno.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
         carregarMusicas();
     }
 
     private void carregarMusicas() {
-        try {
-            ObservableList<MusicasDTO> lista =
-                    FXCollections.observableArrayList(
-                            new MusicasDAO().listarMusicas()
-                    );
 
-            tblMusicas.setItems(lista);
+        ObservableList<MusicasDTO> lista =
+                FXCollections.observableArrayList(
+                        new MusicasDAO().listarMusicas()
+                );
 
-        } catch (Exception e) {
-            System.out.println("Erro ao carregar músicas: " + e.getMessage());
-        }
+        tblMusicas.setItems(lista);
     }
 
     @FXML
     private void btnSalvarAction(ActionEvent event) {
-        if (txtNome.getText().isEmpty() || txtArtista.getText().isEmpty() || txtAno.getText().isEmpty()) {
+
+        if (txtNome.getText().isEmpty()
+                || txtArtista.getText().isEmpty()
+                || txtAno.getText().isEmpty()) {
+
             return;
         }
 
-        try {
-            MusicasDTO novaMusica = new MusicasDTO();
-            novaMusica.setNome(txtNome.getText());
-            novaMusica.setArtista(txtArtista.getText());
-            novaMusica.setGenero(txtGenero.getText());
-            novaMusica.setAno(Integer.parseInt(txtAno.getText()));
+        MusicasDTO novaMusica = new MusicasDTO();
 
-            new MusicasDAO().cadastrarMusicas(novaMusica);
+        novaMusica.setNome(txtNome.getText());
+        novaMusica.setArtista(txtArtista.getText());
+        novaMusica.setGenero(txtGenero.getText());
+        novaMusica.setAno(Integer.parseInt(txtAno.getText()));
 
-            carregarMusicas();
-            limparCampos();
+        new MusicasDAO().cadastrarMusicas(novaMusica);
 
-        } catch (NumberFormatException e) {
-            System.out.println("Ano inválido");
-        } catch (Exception e) {
-            System.out.println("Erro ao salvar música: " + e.getMessage());
-        }
+        carregarMusicas();
+        limparCampos();
     }
 
     @FXML
     private void btnAtualizarAction(ActionEvent event) {
-        if (txtId.getText().isEmpty() || txtNome.getText().isEmpty() || txtArtista.getText().isEmpty() || txtAno.getText().isEmpty()) {
+
+        if (txtId.getText().isEmpty()
+                || txtNome.getText().isEmpty()
+                || txtArtista.getText().isEmpty()
+                || txtAno.getText().isEmpty()) {
+
             return;
         }
 
-        try {
-            MusicasDTO musicaEditada = new MusicasDTO();
-            musicaEditada.setId(Integer.parseInt(txtId.getText()));
-            musicaEditada.setNome(txtNome.getText());
-            musicaEditada.setArtista(txtArtista.getText());
-            musicaEditada.setGenero(txtGenero.getText());
-            musicaEditada.setAno(Integer.parseInt(txtAno.getText()));
+        MusicasDTO musicaEditada = new MusicasDTO();
 
-            new MusicasDAO().atualizarMusicas(musicaEditada);
+        musicaEditada.setId(Integer.parseInt(txtId.getText()));
+        musicaEditada.setNome(txtNome.getText());
+        musicaEditada.setArtista(txtArtista.getText());
+        musicaEditada.setGenero(txtGenero.getText());
+        musicaEditada.setAno(Integer.parseInt(txtAno.getText()));
 
-            carregarMusicas();
-            limparCampos();
+        new MusicasDAO().atualizarMusicas(musicaEditada);
 
-        } catch (NumberFormatException e) {
-            System.out.println("Dados inválidos");
-        } catch (Exception e) {
-            System.out.println("Erro ao atualizar música: " + e.getMessage());
-        }
+        carregarMusicas();
+        limparCampos();
     }
 
     @FXML
     private void btnDeletarAction(ActionEvent event) {
+
         if (txtId.getText().isEmpty()) {
             return;
         }
 
-        try {
-            int id = Integer.parseInt(txtId.getText());
+        int id = Integer.parseInt(txtId.getText());
 
-            new MusicasDAO().deletarMusicas(id);
+        new MusicasDAO().deletarMusicas(id);
 
-            carregarMusicas();
-            limparCampos();
-
-        } catch (NumberFormatException e) {
-            System.out.println("ID inválido");
-        } catch (Exception e) {
-            System.out.println("Erro ao deletar música: " + e.getMessage());
-        }
+        carregarMusicas();
+        limparCampos();
     }
 
     @FXML
     private void btnLimparAction(ActionEvent event) {
-        try {
-            limparCampos();
-        } catch (Exception e) {
-            System.out.println("Erro ao limpar campos: " + e.getMessage());
-        }
+        limparCampos();
     }
 
     private void limparCampos() {
+
         txtId.clear();
         txtNome.clear();
         txtArtista.clear();
         txtGenero.clear();
         txtAno.clear();
+
+        btnAtualizar.setDisable(true);
+        btnDeletar.setDisable(true);
+
         txtNome.requestFocus();
     }
 
     @FXML
     private void carregarCampos(MouseEvent event) {
-        try {
-            MusicasDTO musicaSelecionada = tblMusicas.getSelectionModel().getSelectedItem();
 
-            if (musicaSelecionada != null) {
-                txtId.setText(String.valueOf(musicaSelecionada.getId()));
-                txtNome.setText(musicaSelecionada.getNome());
-                txtArtista.setText(musicaSelecionada.getArtista());
-                txtGenero.setText(musicaSelecionada.getGenero());
-                txtAno.setText(String.valueOf(musicaSelecionada.getAno()));
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao carregar campos da tabela: " + e.getMessage());
+        MusicasDTO musicaSelecionada =
+                tblMusicas.getSelectionModel().getSelectedItem();
+
+        if (musicaSelecionada != null) {
+
+            txtId.setText(String.valueOf(musicaSelecionada.getId()));
+            txtNome.setText(musicaSelecionada.getNome());
+            txtArtista.setText(musicaSelecionada.getArtista());
+            txtGenero.setText(musicaSelecionada.getGenero());
+            txtAno.setText(String.valueOf(musicaSelecionada.getAno()));
+
+            btnAtualizar.setDisable(false);
+            btnDeletar.setDisable(false);
         }
     }
 }
