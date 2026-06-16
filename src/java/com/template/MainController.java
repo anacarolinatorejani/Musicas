@@ -54,9 +54,7 @@ public class MainController {
         txtGenero.setPromptText("Digite o gênero");
         txtAno.setPromptText("Digite o ano");
 
-        btnAtualizar.setDisable(true);
-        btnDeletar.setDisable(true);
-
+        // Permite somente números no campo Ano
         txtAno.textProperty().addListener((obs, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 txtAno.setText(newValue.replaceAll("[^\\d]", ""));
@@ -152,9 +150,6 @@ public class MainController {
         txtGenero.clear();
         txtAno.clear();
 
-        btnAtualizar.setDisable(true);
-        btnDeletar.setDisable(true);
-
         txtNome.requestFocus();
     }
 
@@ -171,9 +166,6 @@ public class MainController {
             txtArtista.setText(musicaSelecionada.getArtista());
             txtGenero.setText(musicaSelecionada.getGenero());
             txtAno.setText(String.valueOf(musicaSelecionada.getAno()));
-
-            btnAtualizar.setDisable(false);
-            btnDeletar.setDisable(false);
         }
     }
 }
