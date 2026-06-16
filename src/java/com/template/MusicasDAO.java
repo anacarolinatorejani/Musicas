@@ -1,13 +1,12 @@
 package com.template;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MusicasDAO {
-
-    private static final Logger logger = Logger.getLogger(MusicasDAO.class.getName());
 
     public ArrayList<MusicasDTO> listarMusicas() {
 
@@ -33,7 +32,7 @@ public class MusicasDAO {
             }
 
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao listar músicas", e);
+            throw new RuntimeException("Erro ao listar músicas.", e);
         }
 
         return lista;
@@ -53,10 +52,8 @@ public class MusicasDAO {
 
             comando.executeUpdate();
 
-            logger.info("Música cadastrada com sucesso!");
-
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao cadastrar música", e);
+            throw new RuntimeException("Erro ao cadastrar música.", e);
         }
     }
 
@@ -75,10 +72,8 @@ public class MusicasDAO {
 
             comando.executeUpdate();
 
-            logger.info("Música atualizada com sucesso!");
-
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao atualizar música", e);
+            throw new RuntimeException("Erro ao atualizar música.", e);
         }
     }
 
@@ -93,10 +88,8 @@ public class MusicasDAO {
 
             comando.executeUpdate();
 
-            logger.info("Música deletada com sucesso!");
-
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao deletar música", e);
+            throw new RuntimeException("Erro ao excluir música.", e);
         }
     }
 }

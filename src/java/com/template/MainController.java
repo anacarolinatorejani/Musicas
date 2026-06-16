@@ -12,7 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.input.MouseEvent;
 
 public class MainController {
-
+//declara os elementos do front no controller
     @FXML private Button btnSalvar;
     @FXML private Button btnAtualizar;
     @FXML private Button btnDeletar;
