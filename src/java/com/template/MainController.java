@@ -10,6 +10,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class MainController {
 
@@ -54,7 +56,9 @@ public class MainController {
         txtGenero.setPromptText("Digite o gênero");
         txtAno.setPromptText("Digite o ano");
 
-        // Permite somente números no campo Ano
+        btnAtualizar.setDisable(true);
+        btnDeletar.setDisable(true);
+
         txtAno.textProperty().addListener((obs, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 txtAno.setText(newValue.replaceAll("[^\\d]", ""));
@@ -65,27 +69,24 @@ public class MainController {
     }
 
     private void carregarMusicas() {
-
         ObservableList<MusicasDTO> lista =
                 FXCollections.observableArrayList(
                         new MusicasDAO().listarMusicas()
                 );
-
         tblMusicas.setItems(lista);
     }
 
     @FXML
     private void btnSalvarAction(ActionEvent event) {
-
         if (txtNome.getText().isEmpty()
                 || txtArtista.getText().isEmpty()
                 || txtAno.getText().isEmpty()) {
 
+            exibirAlerta("Aviso", "Por favor, preencha todos os campos obrigatórios (Nome, Artista e Ano).", AlertType.WARNING);
             return;
         }
 
         MusicasDTO novaMusica = new MusicasDTO();
-
         novaMusica.setNome(txtNome.getText());
         novaMusica.setArtista(txtArtista.getText());
         novaMusica.setGenero(txtGenero.getText());
@@ -95,21 +96,21 @@ public class MainController {
 
         carregarMusicas();
         limparCampos();
+
+        exibirAlerta("Sucesso", "Música cadastrada com sucesso!", AlertType.INFORMATION);
     }
 
     @FXML
     private void btnAtualizarAction(ActionEvent event) {
-
         if (txtId.getText().isEmpty()
                 || txtNome.getText().isEmpty()
                 || txtArtista.getText().isEmpty()
                 || txtAno.getText().isEmpty()) {
-
+            exibirAlerta("Aviso", "Não há dados suficientes para atualizar.", AlertType.WARNING);
             return;
         }
 
         MusicasDTO musicaEditada = new MusicasDTO();
-
         musicaEditada.setId(Integer.parseInt(txtId.getText()));
         musicaEditada.setNome(txtNome.getText());
         musicaEditada.setArtista(txtArtista.getText());
@@ -120,21 +121,23 @@ public class MainController {
 
         carregarMusicas();
         limparCampos();
+
+        exibirAlerta("Sucesso", "Música atualizada com sucesso!", AlertType.INFORMATION);
     }
 
     @FXML
     private void btnDeletarAction(ActionEvent event) {
-
         if (txtId.getText().isEmpty()) {
             return;
         }
 
         int id = Integer.parseInt(txtId.getText());
-
         new MusicasDAO().deletarMusicas(id);
 
         carregarMusicas();
         limparCampos();
+
+        exibirAlerta("Sucesso", "Música excluída com sucesso!", AlertType.INFORMATION);
     }
 
     @FXML
@@ -143,29 +146,40 @@ public class MainController {
     }
 
     private void limparCampos() {
-
         txtId.clear();
         txtNome.clear();
         txtArtista.clear();
         txtGenero.clear();
         txtAno.clear();
 
+        btnAtualizar.setDisable(true);
+        btnDeletar.setDisable(true);
+
         txtNome.requestFocus();
     }
 
     @FXML
     private void carregarCampos(MouseEvent event) {
-
         MusicasDTO musicaSelecionada =
                 tblMusicas.getSelectionModel().getSelectedItem();
 
         if (musicaSelecionada != null) {
-
             txtId.setText(String.valueOf(musicaSelecionada.getId()));
             txtNome.setText(musicaSelecionada.getNome());
             txtArtista.setText(musicaSelecionada.getArtista());
             txtGenero.setText(musicaSelecionada.getGenero());
             txtAno.setText(String.valueOf(musicaSelecionada.getAno()));
+
+            btnAtualizar.setDisable(false);
+            btnDeletar.setDisable(false);
         }
+    }
+
+    private void exibirAlerta(String titulo, String mensagem, AlertType tipo) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensagem);
+        alerta.showAndWait();
     }
 }
