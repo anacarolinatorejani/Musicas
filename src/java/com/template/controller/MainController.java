@@ -1,5 +1,7 @@
-package com.template;
+package com.template.controller;
 
+import com.template.model.MusicasDAO;
+import com.template.model.MusicasDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,6 +14,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+
+import static com.template.util.DialogUtil.*;
 
 public class MainController {
 
@@ -82,7 +86,7 @@ public class MainController {
                 || txtArtista.getText().isEmpty()
                 || txtAno.getText().isEmpty()) {
 
-            exibirAlerta("Aviso", "Por favor, preencha todos os campos obrigatórios (Nome, Artista e Ano).", AlertType.WARNING);
+            showError("Por favor, preencha todos os campos obrigatórios");
             return;
         }
 
@@ -97,7 +101,7 @@ public class MainController {
         carregarMusicas();
         limparCampos();
 
-        exibirAlerta("Sucesso", "Música cadastrada com sucesso!", AlertType.INFORMATION);
+        showInfo("Música cadastrada com sucesso!");
     }
 
     @FXML
@@ -106,7 +110,7 @@ public class MainController {
                 || txtNome.getText().isEmpty()
                 || txtArtista.getText().isEmpty()
                 || txtAno.getText().isEmpty()) {
-            exibirAlerta("Aviso", "Não há dados suficientes para atualizar.", AlertType.WARNING);
+            showInfo("Por favor, preencha todos os campos obrigatórios.");
             return;
         }
 
@@ -122,7 +126,7 @@ public class MainController {
         carregarMusicas();
         limparCampos();
 
-        exibirAlerta("Sucesso", "Música atualizada com sucesso!", AlertType.INFORMATION);
+        showInfo("Sucesso, Música atualizada com sucesso!");
     }
 
     @FXML
@@ -137,7 +141,7 @@ public class MainController {
         carregarMusicas();
         limparCampos();
 
-        exibirAlerta("Sucesso", "Música excluída com sucesso!", AlertType.INFORMATION);
+        showInfo("Sucesso, Música excluída com sucesso!");
     }
 
     @FXML
@@ -175,11 +179,4 @@ public class MainController {
         }
     }
 
-    private void exibirAlerta(String titulo, String mensagem, AlertType tipo) {
-        Alert alerta = new Alert(tipo);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensagem);
-        alerta.showAndWait();
-    }
 }
