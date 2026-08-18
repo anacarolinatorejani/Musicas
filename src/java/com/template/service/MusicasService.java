@@ -7,25 +7,25 @@ import java.util.ArrayList;
 
 public class MusicasService {
 
-    private final MusicasDAO dao;
+    private final MusicasDAO musicasdao;
 
     public MusicasService() {
-        this.dao = new MusicasDAO();
+        this.musicasdao = new MusicasDAO();
     }
 
     public ArrayList<MusicasDTO> listarMusicas() {
-        return dao.listarMusicas();
+        return musicasdao.listarMusicas();
     }
 
     public void cadastrarMusica(MusicasDTO musica) {
-        dao.cadastrarMusicas(musica);
+        musicasdao.cadastrarMusicas(musica);
     }
 
     public void atualizarMusica(MusicasDTO musica) {
-        dao.atualizarMusicas(musica);
+        musicasdao.atualizarMusicas(musica);
     }
 
     public void deletarMusica(int id) {
-        dao.deletarMusicas(id);
+        musicasdao.deletarMusicas(id);
     }
 }

@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
 import static com.template.util.DialogUtil.*;
+import static com.template.validator.MusicasValidator.validarCampos;
 
 public class MainController {
 
@@ -143,7 +144,11 @@ public class MainController {
     @FXML
     private void btnSalvarAction(ActionEvent event) {
 
-        if (!validarCampos()) {
+        if (!validarCampos(
+                txtNome.getText(),
+                txtArtista.getText(),
+                txtGenero.getText(),
+                txtAno.getText())) {
             return;
         }
 
@@ -160,7 +165,11 @@ public class MainController {
     @FXML
     private void btnAtualizarAction(ActionEvent event) {
 
-        if (!validarCampos()) {
+        if (!validarCampos(
+                txtNome.getText(),
+                txtArtista.getText(),
+                txtGenero.getText(),
+                txtAno.getText())) {
             return;
         }
 
@@ -201,23 +210,7 @@ public class MainController {
         limparCampos();
     }
 
-    private boolean validarCampos() {
 
-        boolean valido = MusicasValidator.validarMusica(
-                txtNome.getText(),
-                txtArtista.getText(),
-                txtGenero.getText(),
-                txtAno.getText()
-        );
-
-        if (!valido) {
-            showError(
-                    "Por favor, preencha todos os campos obrigatórios."
-            );
-        }
-
-        return valido;
-    }
 
     private MusicasDTO criarMusica() {
 
