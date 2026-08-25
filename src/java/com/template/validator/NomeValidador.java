@@ -1,6 +1,6 @@
 package com.template.validator;
 
-    class NomeValidador implements Validador<String> {
+    public class NomeValidador implements Validador<String> {
 
         private final String nome;
 
@@ -10,7 +10,6 @@ package com.template.validator;
 
         @Override
         public boolean validar(String valorAtual) {
-            // O valor do parâmetro é o que será validado neste ciclo
             return this.nome != null && !this.nome.trim().isEmpty();
         }
 

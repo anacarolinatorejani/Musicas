@@ -27,6 +27,9 @@ public class MusicasValidator {
         validadores.add(
                 new CampoObrigatorioValidador("Ano", ano)
         );
+        validadores.add(
+                new NomeValidador(nome)
+        );
         for (Validador<String> validador : validadores) {
             if (!validador.validar(validador.getValor())) {
                 showError(validador.getMensagemErro());

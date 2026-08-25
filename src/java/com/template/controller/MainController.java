@@ -2,7 +2,8 @@ package com.template.controller;
 
 import com.template.model.MusicasDTO;
 import com.template.service.MusicasService;
-import com.template.validator.MusicasValidator;
+import com.template.validator.AnoValidador;
+import com.template.validator.CampoObrigatorioValidador;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +20,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
 import static com.template.util.DialogUtil.*;
-import static com.template.validator.MusicasValidator.validarCampos;
 
 public class MainController {
 
@@ -144,11 +144,7 @@ public class MainController {
     @FXML
     private void btnSalvarAction(ActionEvent event) {
 
-        if (!validarCampos(
-                txtNome.getText(),
-                txtArtista.getText(),
-                txtGenero.getText(),
-                txtAno.getText())) {
+        if (!validarCampos()) {
             return;
         }
 
@@ -165,11 +161,7 @@ public class MainController {
     @FXML
     private void btnAtualizarAction(ActionEvent event) {
 
-        if (!validarCampos(
-                txtNome.getText(),
-                txtArtista.getText(),
-                txtGenero.getText(),
-                txtAno.getText())) {
+        if (!validarCampos()) {
             return;
         }
 
@@ -210,8 +202,6 @@ public class MainController {
         limparCampos();
     }
 
-
-
     private MusicasDTO criarMusica() {
 
         MusicasDTO musica = new MusicasDTO();
@@ -219,11 +209,60 @@ public class MainController {
         musica.setNome(txtNome.getText());
         musica.setArtista(txtArtista.getText());
         musica.setGenero(txtGenero.getText());
+
         musica.setAno(
                 Integer.parseInt(txtAno.getText())
         );
 
         return musica;
+    }
+
+    private boolean validarCampos() {
+
+        CampoObrigatorioValidador nome =
+                new CampoObrigatorioValidador(
+                        "Nome",
+                        txtNome.getText()
+                );
+
+        CampoObrigatorioValidador artista =
+                new CampoObrigatorioValidador(
+                        "Artista",
+                        txtArtista.getText()
+                );
+
+        CampoObrigatorioValidador genero =
+                new CampoObrigatorioValidador(
+                        "Gênero",
+                        txtGenero.getText()
+                );
+
+        AnoValidador ano =
+                new AnoValidador(
+                        txtAno.getText()
+                );
+
+        if (!nome.validar(nome.getValor())) {
+            showError(nome.getMensagemErro());
+            return false;
+        }
+
+        if (!artista.validar(artista.getValor())) {
+            showError(artista.getMensagemErro());
+            return false;
+        }
+
+        if (!genero.validar(genero.getValor())) {
+            showError(genero.getMensagemErro());
+            return false;
+        }
+
+        if (!ano.validar(ano.getValor())) {
+            showError(ano.getMensagemErro());
+            return false;
+        }
+
+        return true;
     }
 
     private void limparCampos() {
