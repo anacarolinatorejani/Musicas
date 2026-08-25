@@ -1,6 +1,7 @@
 package com.template.validator;
 
-public class CampoObrigatorioValidador implements Validador<String>{
+public class CampoObrigatorioValidador implements Validador<String> {
+
     private final String nomeCampo;
     private final String valor;
 
@@ -10,13 +11,13 @@ public class CampoObrigatorioValidador implements Validador<String>{
     }
 
     @Override
-    public boolean validar(String valor) {
+    public boolean validar(String valorAtual) {
         return this.valor != null && !this.valor.trim().isEmpty();
     }
 
     @Override
     public String getMensagemErro() {
-        return "O campo" + nomeCampo + "deve ser preenchido";
+        return "O campo " + nomeCampo + " deve ser preenchido.";
     }
 
     @Override

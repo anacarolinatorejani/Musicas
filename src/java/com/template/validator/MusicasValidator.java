@@ -1,5 +1,8 @@
 package com.template.validator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.template.util.DialogUtil.showError;
 
 public class MusicasValidator {
@@ -10,33 +13,40 @@ public class MusicasValidator {
             String genero,
             String ano) {
 
-        if (nome == null || nome.trim().isEmpty() ||
-                artista == null || artista.trim().isEmpty() ||
-                genero == null || genero.trim().isEmpty() ||
-                ano == null || ano.trim().isEmpty()) {
+        List<Validador<String>> validadores = new ArrayList<>();
 
-            return false;
+        validadores.add(
+                new CampoObrigatorioValidador("Nome", nome)
+        );
+        validadores.add(
+                new CampoObrigatorioValidador("Artista", artista)
+        );
+        validadores.add(
+                new CampoObrigatorioValidador("Gênero", genero)
+        );
+        validadores.add(
+                new CampoObrigatorioValidador("Ano", ano)
+        );
+        for (Validador<String> validador : validadores) {
+            if (!validador.validar(validador.getValor())) {
+                showError(validador.getMensagemErro());
+                return false;
+            }
         }
-
         return true;
     }
 
-    public static boolean validarCampos(String nome, String artista, String genero, String ano) {
+    public static boolean validarCampos(
+            String nome,
+            String artista,
+            String genero,
+            String ano) {
 
-        boolean valido = MusicasValidator.validarMusica(
+        return validarMusica(
                 nome,
                 artista,
                 genero,
                 ano
         );
-
-        if (!valido) {
-            showError(
-                    "Por favor, preencha todos os campos obrigatórios."
-            );
-        }
-
-        return valido;
     }
-
 }
