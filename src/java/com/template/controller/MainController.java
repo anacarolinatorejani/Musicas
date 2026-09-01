@@ -5,6 +5,7 @@ import com.template.service.MusicasService;
 import com.template.validator.AnoValidador;
 import com.template.validator.CampoObrigatorioValidador;
 
+import com.template.validator.IUsuarioValidator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -69,6 +70,11 @@ public class MainController {
     private TableColumn<MusicasDTO, Integer> colAno;
 
     private final MusicasService service = new MusicasService();
+
+    private final IUsuarioValidator uvalidador;
+    public MainController(IUsuarioValidator uvalidador) {
+        this.uvalidador = uvalidador;
+    }
 
     @FXML
     private void initialize() {
@@ -309,6 +315,33 @@ public class MainController {
 
             btnAtualizar.setDisable(false);
             btnDeletar.setDisable(false);
+        }
+    }
+    public class UsuarioValidator implements IUsuarioValidator{
+
+        @Override
+        public boolean validarUsuario(String nome, String genero, String ano, String artista) {
+            return false;
+        }
+
+        @Override
+        public boolean validarNome(String nome) {
+            return false;
+        }
+
+        @Override
+        public boolean validarGenero(String genero) {
+            return false;
+        }
+
+        @Override
+        public boolean validarAno(String ano) {
+            return false;
+        }
+
+        @Override
+        public boolean validarArtista(String artista) {
+            return false;
         }
     }
 }
