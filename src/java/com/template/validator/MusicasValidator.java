@@ -3,18 +3,16 @@ package com.template.validator;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.template.util.DialogUtil.showError;
-
 public class MusicasValidator implements IMusicasValidator {
 
     @Override
-    public boolean validarMusica(String nome, String artista, String genero, String ano) {
+    public String validarMusica(String nome, String artista, String genero, String ano) {
         List<Validador<String>> validadores = new ArrayList<>();
 
-        validadores.add(new CampoObrigatorioValidador("Nome", nome));
-        validadores.add(new CampoObrigatorioValidador("Artista", artista));
-        validadores.add(new CampoObrigatorioValidador("Gênero", genero));
-        validadores.add(new CampoObrigatorioValidador("Ano", ano));
+        validadores.add(new CampoObrigatorioValidador(nome, "Nome"));
+        validadores.add(new CampoObrigatorioValidador(artista, "Artista"));
+        validadores.add(new CampoObrigatorioValidador(genero, "Gênero"));
+        validadores.add(new CampoObrigatorioValidador(ano, "Ano"));
 
         validadores.add(new NomeValidador(nome));
         validadores.add(new ArtistaValidador(artista));
@@ -23,10 +21,10 @@ public class MusicasValidator implements IMusicasValidator {
 
         for (Validador<String> validador : validadores) {
             if (!validador.validar(validador.getValor())) {
-                showError(validador.getMensagemErro());
-                return false;
+                return validador.getMensagemErro();
             }
         }
-        return true;
+
+        return null;
     }
 }

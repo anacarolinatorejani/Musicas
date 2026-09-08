@@ -1,31 +1,54 @@
 package com.template.service;
 
-import com.template.model.MusicasDAO;
-import com.template.model.MusicasDTO;
+import com.template.model.dao.MusicasDAO;
+import com.template.model.dto.MusicasDTO;
+import com.template.validator.MusicasValidator;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class MusicasService {
 
-    private final MusicasDAO musicasdao;
+    private final MusicasDAO dao = new MusicasDAO();
 
-    public MusicasService() {
-        this.musicasdao = new MusicasDAO();
+    public void salvar(
+            String nome,
+            String genero,
+            String artista,
+            String ano
+    ) {
+        MusicasDTO musica = new MusicasDTO();
+        musica.setNome(nome.trim());
+        musica.setGenero(genero.trim());
+        musica.setArtista(artista.trim());
+        musica.setAno(Integer.parseInt(ano.trim()));
+
+        dao.cadastrarMusicas(musica);
     }
 
-    public ArrayList<MusicasDTO> listarMusicas() {
-        return musicasdao.listarMusicas();
+    public void editar(
+            int id,
+            String nome,
+            String genero,
+            String artista,
+            String ano
+    ) {
+        MusicasDTO musica = new MusicasDTO();
+        musica.setId(id);
+        musica.setNome(nome.trim());
+        musica.setGenero(genero.trim());
+        musica.setArtista(artista.trim());
+        musica.setAno(Integer.parseInt(ano.trim()));
+
+        // Altere "atualizar" para o nome do método de edição do seu DAO
+        dao.atualizarMusicas(musica);
     }
 
-    public void cadastrarMusica(MusicasDTO musica) {
-        musicasdao.cadastrarMusicas(musica);
+    public void deletar(int id) {
+        // Altere "deletar" para o nome do método de exclusão do seu DAO (ex: excluir)
+        dao.deletarMusicas(id);
     }
 
-    public void atualizarMusica(MusicasDTO musica) {
-        musicasdao.atualizarMusicas(musica);
-    }
-
-    public void deletarMusica(int id) {
-        musicasdao.deletarMusicas(id);
+    public List<MusicasDTO> listar() {
+        return dao.listarMusicas();
     }
 }

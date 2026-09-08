@@ -1,195 +1,212 @@
 package com.template.controller;
 
-import com.template.model.MusicasDTO;
+import com.template.model.dto.MusicasDTO;
 import com.template.service.MusicasService;
-
+import com.template.util.MusicasViewUtil;
+import com.template.util.DialogUtil;
 import com.template.validator.IMusicasValidator;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 
-import static com.template.util.DialogUtil.*;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainController {
 
-    @FXML private Button btnSalvar;
-    @FXML private Button btnAtualizar;
-    @FXML private Button btnDeletar;
-    @FXML private Button btnLimpar;
-
-    @FXML private TextField txtId;
-    @FXML private TextField txtNome;
-    @FXML private TextField txtArtista;
-    @FXML private TextField txtGenero;
-    @FXML private TextField txtAno;
-
-    @FXML private TableView<MusicasDTO> tblMusicas;
-    @FXML private TableColumn<MusicasDTO, Integer> colId;
-    @FXML private TableColumn<MusicasDTO, String> colNome;
-    @FXML private TableColumn<MusicasDTO, String> colArtista;
-    @FXML private TableColumn<MusicasDTO, String> colGenero;
-    @FXML private TableColumn<MusicasDTO, Integer> colAno;
+    private static final Logger LOGGER = Logger.getLogger(MainController.class.getName());
 
     private final MusicasService service = new MusicasService();
+    private final IMusicasValidator validador;
 
-    private final IMusicasValidator validator;
+    public MainController(IMusicasValidator validador) {
+        this.validador = validador;
+    }
 
-    public MainController(IMusicasValidator validator) {
-        this.validator = validator;
+    // Botões com suporte a nomes alternativos do FXML
+    @FXML private Button btnSalvar;
+    @FXML private Button btnEditar;
+    @FXML private Button btnAtualizar;
+    @FXML private Button btnDeletar;
+    @FXML private Button btnExcluir;
+    @FXML private Button btnLimpar;
+
+    @FXML private TextField txtNome;
+    @FXML private TextField txtGenero;
+    @FXML private TextField txtArtista;
+    @FXML private TextField txtAno;
+
+    @FXML private Label lblMensagem;
+
+    // Tabelas com suporte a plural/singular
+    @FXML private TableView<MusicasDTO> tblMusica;
+    @FXML private TableView<MusicasDTO> tblMusicas;
+
+    @FXML private TableColumn<MusicasDTO, Integer> colId;
+    @FXML private TableColumn<MusicasDTO, String> colNome;
+    @FXML private TableColumn<MusicasDTO, String> colGenero;
+    @FXML private TableColumn<MusicasDTO, String> colArtista;
+    @FXML private TableColumn<MusicasDTO, Integer> colAno;
+
+    private Button getBtnEditarEfetivo() {
+        return btnEditar != null ? btnEditar : btnAtualizar;
+    }
+
+    private Button getBtnDeletarEfetivo() {
+        return btnDeletar != null ? btnDeletar : btnExcluir;
+    }
+
+    private TableView<MusicasDTO> getTabelaEfetiva() {
+        return tblMusica != null ? tblMusica : tblMusicas;
+    }
+
+    @FXML
+    private void carregarCampos() {
+        MusicasDTO selecionado = MusicasViewUtil.obterSelecionado(getTabelaEfetiva());
+        if (selecionado != null) {
+            MusicasViewUtil.preencherCampos(selecionado, txtNome, txtGenero, txtArtista, txtAno, lblMensagem);
+        }
+    }
+
+    @FXML
+    private void btnSalvarAction() {
+        salvarMusica();
+    }
+
+    @FXML
+    private void btnAtualizarAction() {
+        editarMusica();
+    }
+
+    @FXML
+    private void btnEditarAction() {
+        editarMusica();
+    }
+
+    @FXML
+    private void btnExcluirAction() {
+        deletarMusica();
+    }
+
+    @FXML
+    private void btnDeletarAction() {
+        deletarMusica();
+    }
+
+    @FXML
+    private void btnLimparAction() {
+        MusicasViewUtil.limparCampos(txtNome, txtGenero, txtArtista, txtAno, lblMensagem, getTabelaEfetiva());
+    }
+
+    private void salvarMusica() {
+        try {
+            String erro = validador.validarMusica(
+                    txtNome != null ? txtNome.getText() : "",
+                    txtArtista != null ? txtArtista.getText() : "",
+                    txtGenero != null ? txtGenero.getText() : "",
+                    txtAno != null ? txtAno.getText() : ""
+            );
+
+            if (erro != null) {
+                throw new IllegalArgumentException(erro);
+            }
+
+            service.salvar(
+                    txtNome.getText(),
+                    txtGenero.getText(),
+                    txtArtista.getText(),
+                    txtAno.getText()
+            );
+
+            carregarMusicas();
+            MusicasViewUtil.limparCampos(txtNome, txtGenero, txtArtista, txtAno, lblMensagem, getTabelaEfetiva());
+            MusicasViewUtil.mostrarMensagem(lblMensagem, "Música salva com sucesso!", "green");
+
+        } catch (IllegalArgumentException e) {
+            MusicasViewUtil.mostrarMensagem(lblMensagem, e.getMessage(), "red");
+            MusicasViewUtil.focarCampoComErro(e.getMessage(), txtNome, txtGenero, txtArtista, txtAno);
+        } catch (Exception e) {
+            MusicasViewUtil.mostrarMensagem(lblMensagem, "Erro ao salvar a música.", "red");
+            LOGGER.log(Level.SEVERE, "Erro ao salvar música.", e);
+        }
+    }
+
+    private void editarMusica() {
+        MusicasDTO selecionado = MusicasViewUtil.obterSelecionado(getTabelaEfetiva());
+        if (selecionado == null) return;
+
+        try {
+            String erro = validador.validarMusica(
+                    txtNome != null ? txtNome.getText() : "",
+                    txtArtista != null ? txtArtista.getText() : "",
+                    txtGenero != null ? txtGenero.getText() : "",
+                    txtAno != null ? txtAno.getText() : ""
+            );
+
+            if (erro != null) {
+                throw new IllegalArgumentException(erro);
+            }
+
+            service.editar(
+                    selecionado.getId(),
+                    txtNome.getText(),
+                    txtGenero.getText(),
+                    txtArtista.getText(),
+                    txtAno.getText()
+            );
+
+            carregarMusicas();
+            MusicasViewUtil.limparCampos(txtNome, txtGenero, txtArtista, txtAno, lblMensagem, getTabelaEfetiva());
+            MusicasViewUtil.mostrarMensagem(lblMensagem, "Música editada com sucesso!", "green");
+
+        } catch (IllegalArgumentException e) {
+            MusicasViewUtil.mostrarMensagem(lblMensagem, e.getMessage(), "red");
+            MusicasViewUtil.focarCampoComErro(e.getMessage(), txtNome, txtGenero, txtArtista, txtAno);
+        } catch (Exception e) {
+            MusicasViewUtil.mostrarMensagem(lblMensagem, "Erro ao editar a música.", "red");
+            LOGGER.log(Level.SEVERE, "Erro ao editar música.", e);
+        }
+    }
+
+    private void deletarMusica() {
+        MusicasDTO selecionado = MusicasViewUtil.obterSelecionado(getTabelaEfetiva());
+        if (selecionado == null) return;
+
+        boolean confirmou = DialogUtil.confirmar(
+                "Confirmar Exclusão",
+                "Deseja realmente excluir a música \"" + selecionado.getNome() + "\"?"
+        );
+
+        if (!confirmou) return;
+
+        try {
+            service.deletar(selecionado.getId());
+            carregarMusicas();
+            MusicasViewUtil.limparCampos(txtNome, txtGenero, txtArtista, txtAno, lblMensagem, getTabelaEfetiva());
+            MusicasViewUtil.mostrarMensagem(lblMensagem, "Música deletada com sucesso.", "blue");
+        } catch (Exception e) {
+            MusicasViewUtil.mostrarMensagem(lblMensagem, "Erro ao deletar a música.", "red");
+            LOGGER.log(Level.SEVERE, "Erro ao deletar música.", e);
+        }
+    }
+
+    private void carregarMusicas() {
+        MusicasViewUtil.carregarTabela(getTabelaEfetiva(), service.listar());
     }
 
     @FXML
     private void initialize() {
-        configurarTabela();
-        configurarCampos();
-        carregarMusicas();
-    }
+        TableView<MusicasDTO> tabela = getTabelaEfetiva();
 
-    private void configurarTabela() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-        colArtista.setCellValueFactory(new PropertyValueFactory<>("artista"));
-        colGenero.setCellValueFactory(new PropertyValueFactory<>("genero"));
-        colAno.setCellValueFactory(new PropertyValueFactory<>("ano"));
+        MusicasViewUtil.configurarTabela(colId, colNome, colGenero, colArtista, colAno);
+        MusicasViewUtil.configurarBotoes(btnSalvar, getBtnEditarEfetivo(), getBtnDeletarEfetivo(), tabela);
 
-        colId.setPrefWidth(60);
-        colNome.setPrefWidth(180);
-        colArtista.setPrefWidth(180);
-        colGenero.setPrefWidth(140);
-        colAno.setPrefWidth(100);
-    }
-
-    private void configurarCampos() {
-        txtId.setEditable(false);
-
-        txtNome.setPromptText("Digite o nome da música");
-        txtArtista.setPromptText("Digite o artista");
-        txtGenero.setPromptText("Digite o gênero");
-        txtAno.setPromptText("Digite o ano");
-
-        btnAtualizar.setDisable(true);
-        btnDeletar.setDisable(true);
-
-        txtAno.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                txtAno.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
-    }
-
-    private void carregarMusicas() {
-        ObservableList<MusicasDTO> lista = FXCollections.observableArrayList(
-                service.listarMusicas()
-        );
-        tblMusicas.setItems(lista);
-    }
-
-    private boolean validarCampos() {
-        // Validação realizada pela interface injetada
-        return validator.validarMusica(
-                txtNome.getText(),
-                txtArtista.getText(),
-                txtGenero.getText(),
-                txtAno.getText()
-        );
-    }
-
-    @FXML
-    private void btnSalvarAction(ActionEvent event) {
-        if (!validarCampos()) {
-            return;
+        if (tabela != null) {
+            tabela.getSelectionModel().selectedItemProperty().addListener(
+                    (obs, antigo, novo) -> MusicasViewUtil.preencherCampos(novo, txtNome, txtGenero, txtArtista, txtAno, lblMensagem)
+            );
         }
 
-        MusicasDTO musica = criarMusica();
-        service.cadastrarMusica(musica);
-
         carregarMusicas();
-        limparCampos();
-
-        showInfo("Música cadastrada com sucesso!");
-    }
-
-    @FXML
-    private void btnAtualizarAction(ActionEvent event) {
-        if (!validarCampos()) {
-            return;
-        }
-
-        MusicasDTO musica = criarMusica();
-        musica.setId(Integer.parseInt(txtId.getText()));
-
-        service.atualizarMusica(musica);
-
-        carregarMusicas();
-        limparCampos();
-
-        showInfo("Música atualizada com sucesso!");
-    }
-
-    @FXML
-    private void btnDeletarAction(ActionEvent event) {
-        if (txtId.getText().isEmpty()) {
-            return;
-        }
-
-        int id = Integer.parseInt(txtId.getText());
-        service.deletarMusica(id);
-
-        carregarMusicas();
-        limparCampos();
-
-        showInfo("Música excluída com sucesso!");
-    }
-
-    @FXML
-    private void btnLimparAction(ActionEvent event) {
-        limparCampos();
-    }
-
-    private MusicasDTO criarMusica() {
-        MusicasDTO musica = new MusicasDTO();
-
-        musica.setNome(txtNome.getText());
-        musica.setArtista(txtArtista.getText());
-        musica.setGenero(txtGenero.getText());
-        musica.setAno(Integer.parseInt(txtAno.getText()));
-
-        return musica;
-    }
-
-    private void limparCampos() {
-        txtId.clear();
-        txtNome.clear();
-        txtArtista.clear();
-        txtGenero.clear();
-        txtAno.clear();
-
-        btnAtualizar.setDisable(true);
-        btnDeletar.setDisable(true);
-
-        txtNome.requestFocus();
-    }
-
-    @FXML
-    private void carregarCampos(MouseEvent event) {
-        MusicasDTO musicaSelecionada = tblMusicas.getSelectionModel().getSelectedItem();
-
-        if (musicaSelecionada != null) {
-            txtId.setText(String.valueOf(musicaSelecionada.getId()));
-            txtNome.setText(musicaSelecionada.getNome());
-            txtArtista.setText(musicaSelecionada.getArtista());
-            txtGenero.setText(musicaSelecionada.getGenero());
-            txtAno.setText(String.valueOf(musicaSelecionada.getAno()));
-
-            btnAtualizar.setDisable(false);
-            btnDeletar.setDisable(false);
-        }
+        LOGGER.info("FXML carregado com sucesso!");
     }
 }

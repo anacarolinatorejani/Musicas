@@ -1,21 +1,17 @@
 package com.template.util;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
 
 public class DialogUtil {
-    public static void showError(String mensagem){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Erro");
+    public static boolean confirmar(String titulo, String mensagem) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensagem);
-        alert.showAndWait();
-    }
 
-    public static void showInfo(String mensagem){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Informação");
-        alert.setHeaderText(null);
-        alert.setContentText(mensagem);
-        alert.showAndWait();
+        Optional<ButtonType> resultado = alert.showAndWait();
+        return resultado.isPresent() && resultado.get() == ButtonType.OK;
     }
 }
