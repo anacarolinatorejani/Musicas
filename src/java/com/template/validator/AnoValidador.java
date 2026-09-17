@@ -23,7 +23,7 @@ public class AnoValidador implements Validador<String> {
 
     @Override
     public String getMensagemErro() {
-        return "Digite um ano válido de lançamento (entre 1500 e 2030).";
+        return "O campo Ano deve conter apenas números válidos (entre 1500 e 2030).";
     }
 
     @Override

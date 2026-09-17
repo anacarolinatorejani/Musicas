@@ -54,12 +54,6 @@ public class MainViewHelper {
 
         btnAtualizar.setDisable(true);
         btnDeletar.setDisable(true);
-
-        txtAno.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                txtAno.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
     }
 
     public static void atualizarTabela(TableView<MusicasDTO> tblMusicas, List<MusicasDTO> musicas) {
