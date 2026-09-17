@@ -1,42 +1,15 @@
 package com.template.validator;
 
-import static com.template.util.DialogUtil.showError;
+public class MusicasValidator implements IMusicaValidador {
 
-public class MusicasValidator {
+    private final MusicaValidador validador = new MusicaValidador();
 
-    public static boolean validarMusica(
-            String nome,
-            String artista,
-            String genero,
-            String ano) {
-
-        if (nome == null || nome.trim().isEmpty() ||
-                artista == null || artista.trim().isEmpty() ||
-                genero == null || genero.trim().isEmpty() ||
-                ano == null || ano.trim().isEmpty()) {
-
-            return false;
-        }
-
-        return true;
+    @Override
+    public boolean validarMusica(String nome, String artista, String genero, String ano) {
+        return validador.validarMusica(nome, artista, genero, ano);
     }
 
     public static boolean validarCampos(String nome, String artista, String genero, String ano) {
-
-        boolean valido = MusicasValidator.validarMusica(
-                nome,
-                artista,
-                genero,
-                ano
-        );
-
-        if (!valido) {
-            showError(
-                    "Por favor, preencha todos os campos obrigatórios."
-            );
-        }
-
-        return valido;
+        return new MusicaValidador().validarMusica(nome, artista, genero, ano);
     }
-
 }

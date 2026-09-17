@@ -1,26 +1,25 @@
 package com.template.validator;
 
-    class NomeValidador implements Validador<String> {
+public class NomeValidador implements Validador<String> {
 
-        private final String nome;
+    private final String nome;
 
-        public NomeValidador(String nome) {
-            this.nome = nome;
-        }
-
-        @Override
-        public boolean validar(String valorAtual) {
-            // O valor do parâmetro é o que será validado neste ciclo
-            return this.nome != null && !this.nome.trim().isEmpty();
-        }
-
-        @Override
-        public String getMensagemErro() {
-            return "Digite um nome válido.";
-        }
-
-        @Override
-        public String getValor() {
-            return nome;
-        }
+    public NomeValidador(String nome) {
+        this.nome = nome;
     }
+
+    @Override
+    public boolean validar(String valorAtual) {
+        return this.nome != null && !this.nome.trim().isEmpty() && this.nome.trim().length() >= 2;
+    }
+
+    @Override
+    public String getMensagemErro() {
+        return "Digite um nome válido (mínimo de 2 caracteres).";
+    }
+
+    @Override
+    public String getValor() {
+        return nome;
+    }
+}
