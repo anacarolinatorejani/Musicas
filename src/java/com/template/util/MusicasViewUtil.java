@@ -14,6 +14,7 @@ import java.util.List;
 public class MusicasViewUtil {
 
     private MusicasViewUtil() {
+        throw new UnsupportedOperationException("Esta classe não pode ser instanciada.");
     }
 
     public static void configurarTabela(
