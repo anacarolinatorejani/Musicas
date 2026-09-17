@@ -1,10 +1,10 @@
 package com.template.service;
 
-import com.template.model.IMusicasDAO;
-import com.template.model.MusicasDAO;
-import com.template.model.MusicasDTO;
+import com.template.model.dao.IMusicasDAO;
+import com.template.model.dao.MusicasDAO;
+import com.template.model.dto.MusicasDTO;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class MusicasService implements IMusicasService {
 

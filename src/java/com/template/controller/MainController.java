@@ -1,6 +1,6 @@
 package com.template.controller;
 
-import com.template.model.MusicasDTO;
+import com.template.model.dto.MusicasDTO;
 import com.template.service.IMusicasService;
 import com.template.service.MusicasService;
 import com.template.util.DialogUtil;
@@ -15,9 +15,56 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
+import java.util.logging.Logger;
+
 public class MainController {
 
     private static final Logger LOGGER = Logger.getLogger(MainController.class.getName());
+
+    @FXML
+    private Button btnSalvar;
+
+    @FXML
+    private Button btnAtualizar;
+
+    @FXML
+    private Button btnDeletar;
+
+    @FXML
+    private Button btnLimpar;
+
+    @FXML
+    private TextField txtId;
+
+    @FXML
+    private TextField txtNome;
+
+    @FXML
+    private TextField txtArtista;
+
+    @FXML
+    private TextField txtGenero;
+
+    @FXML
+    private TextField txtAno;
+
+    @FXML
+    private TableView<MusicasDTO> tblMusicas;
+
+    @FXML
+    private TableColumn<MusicasDTO, Integer> colId;
+
+    @FXML
+    private TableColumn<MusicasDTO, String> colNome;
+
+    @FXML
+    private TableColumn<MusicasDTO, String> colArtista;
+
+    @FXML
+    private TableColumn<MusicasDTO, String> colGenero;
+
+    @FXML
+    private TableColumn<MusicasDTO, Integer> colAno;
 
     private final IMusicasService service;
     private final IMusicaValidador musicaValidador;
@@ -122,5 +169,4 @@ public class MainController {
         MusicasDTO musicaSelecionada = tblMusicas.getSelectionModel().getSelectedItem();
         MainViewHelper.preencherCampos(musicaSelecionada, txtId, txtNome, txtArtista, txtGenero, txtAno, btnAtualizar, btnDeletar);
     }
-    
 }

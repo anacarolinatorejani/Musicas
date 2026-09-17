@@ -1,7 +1,6 @@
 package com.template.service;
 
-import com.template.model.MusicasDTO;
-
+import com.template.model.dto.MusicasDTO;
 import java.util.ArrayList;
 
 public interface IMusicasService {

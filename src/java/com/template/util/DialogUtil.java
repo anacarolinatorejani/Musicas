@@ -11,6 +11,8 @@ public class DialogUtil {
         alert.setTitle("Erro");
         alert.setHeaderText(null);
         alert.setContentText(mensagem);
+        alert.showAndWait();
+    }
 
     public static void showWarning(String mensagem) {
         Alert alert = new Alert(Alert.AlertType.WARNING);

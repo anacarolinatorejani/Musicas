@@ -1,6 +1,6 @@
 package com.template.util;
 
-import com.template.model.MusicasDTO;
+import com.template.model.dto.MusicasDTO;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -11,6 +11,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.List;
 
 public class MainViewHelper {
+
+    private MainViewHelper() {
+        throw new UnsupportedOperationException("Esta classe utilitária não pode ser instanciada.");
+    }
 
     public static void configurarTabela(
             TableColumn<MusicasDTO, Integer> colId,
