@@ -6,7 +6,7 @@ import com.template.service.MusicasService;
 import com.template.util.DialogUtil;
 import com.template.util.MainViewHelper;
 import com.template.validator.IMusicaValidador;
-import com.template.validator.MusicaValidador;
+import com.template.validator.MusicasValidador;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -70,7 +70,7 @@ public class MainController {
     private final IMusicaValidador musicaValidador;
 
     public MainController() {
-        this(new MusicasService(), new MusicaValidador());
+        this(new MusicasService(), new MusicasValidador());
     }
 
     public MainController(IMusicasService service, IMusicaValidador musicaValidador) {

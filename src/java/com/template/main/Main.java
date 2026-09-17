@@ -6,7 +6,7 @@ import com.template.model.dao.MusicasDAO;
 import com.template.service.IMusicasService;
 import com.template.service.MusicasService;
 import com.template.validator.IMusicaValidador;
-import com.template.validator.MusicaValidador;
+import com.template.validator.MusicasValidador;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +22,7 @@ public class Main extends Application {
         // 1. Instancia as dependências concretas fora do Controller (Inversão de Dependência)
         IMusicasDAO musicasDAO = new MusicasDAO();
         IMusicasService musicasService = new MusicasService(musicasDAO);
-        IMusicaValidador musicaValidador = new MusicaValidador();
+        IMusicaValidador musicaValidador = new MusicasValidador();
 
         // 2. Cria a Fábrica de Controladores com as dependências
         ControllerFactory controllerFactory = new ControllerFactory(musicasService, musicaValidador);
